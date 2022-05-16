@@ -2,7 +2,10 @@
   <div>
     <!-- 分类选择 -->
     <el-card class="">
-      <CategorySelect @getCategoryId="getCategoryId"></CategorySelect>
+      <CategorySelect
+        @getCategoryId="getCategoryId"
+        :show="!isShowTable"
+      ></CategorySelect>
     </el-card>
     <!-- 属性展示 -->
     <el-card style="margin-top: 30px">
@@ -79,12 +82,16 @@
                   v-model="row.valueName"
                   placeholder="请输入属性值名称"
                   v-if="row.flag"
+                  :ref="$index"
                   @blur="toLook(row)"
                   @keyup="row.flag = false"
                 ></el-input>
-                <span style="display: block" @click="row.flag = true" v-else>{{
-                  row.valueName
-                }}</span>
+                <span
+                  style="display: block"
+                  @click="toEdit(row, $index)"
+                  v-else
+                  >{{ row.valueName }}</span
+                >
               </template>
             </el-table-column>
             <el-table-column label="操作" width="width">
@@ -104,7 +111,13 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button type="primary" icon="el-icon-plus">保存</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            @click="addOrUpdateAttr()"
+            :disabled="attrInfo.attrValueList.length < 1"
+            >保存</el-button
+          >
           <el-button @click="isShowTable = true">取消</el-button>
         </el-form>
       </div>
@@ -161,11 +174,14 @@ export default {
     },
     // 添加属性值
     addAttrValue() {
-      console.log("object");
       this.attrInfo.attrValueList.push({
         attrId: undefined,
         valueName: "",
         flag: true, // 新增字段 标记是否是编辑模式 input 转 span
+      });
+      //当前flag属性，响应式数据（数据变化视图跟着变化）
+      this.$nextTick(() => {
+        this.$refs[this.attrInfo.attrValueList.length - 1].focus();
       });
     },
     // 添加按钮的显示与隐藏
@@ -184,6 +200,10 @@ export default {
       // 是否显示 table
       isShowTable = false;
       this.attrInfo = cloneDeep(row); // 深拷贝
+      this.attrInfo.attrValueList.forEach((item) => {
+        //第一个参数:对象  第二个参数:添加新的响应式属性  第三参数：新的属性的属性值
+        this.$set(item, "flag", false);
+      });
     },
     //失却焦点的事件---切换为查看模式，展示span
     toLook(row) {
@@ -206,6 +226,37 @@ export default {
       // row：形参是当前用户添加的最新的属性值
       // 当前编辑模式变为查看模式【让input消失，显示span】
       row.flag = false;
+    },
+    // span 转 input
+    toEdit(row, $index) {
+      row.flag = true;
+      // 点击对应input 自动聚焦(获取对应节点)
+      this.$nextTick(() => {
+        this.$refs[$index].focus();
+      });
+    },
+    // 删除属性
+    deleteAttrValue($index) {
+      console.log($index);
+      this.attrInfo.attrValueList.splice($index, 1);
+    },
+    addOrUpdateAttr() {
+      // 整理参数
+      const data = this.attrInfo.attrValueList.filter((res) => {
+        if (res.valueName != "") {
+          delete item.flag;
+          return true;
+        }
+      });
+      try {
+        // 发起请求
+        this.$store.dispatch("product/addOrUpdateAttr", data);
+        this.isShowTable = true; // 平台属性界面切换
+        this.$message({ type: "success", message: "保存成功" });
+        this.getAttrList(); // 请求后重新获取属性 保持数据与界面同步
+      } catch (error) {
+        this.$message({ type: "success", message: "保存失败" });
+      }
     },
   },
 };
