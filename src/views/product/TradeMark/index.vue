@@ -32,11 +32,11 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="width" align="center">
-        <template #default="scoped">
+        <template #default="scope">
           <el-button
             type="warning"
             icon="el-icon-edit"
-            @click="updateTradeMark(scoped.row)"
+            @click="updateTradeMark(scope.row)"
             >编辑</el-button
           >
           <el-button
@@ -132,7 +132,6 @@ export default {
   },
   mounted() {
     this.handleCurrentChange()
-    this.handleDeleteTrademark()
   },
   methods: {
     // 获取品牌列表数据
@@ -194,7 +193,7 @@ export default {
     },
     // 品牌编辑
     updateTradeMark(row) {
-      console.log(row)
+      this.dialogVisible = true
       this.tmForm = { ...row }
     },
     // 品牌删除

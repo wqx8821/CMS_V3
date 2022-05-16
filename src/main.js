@@ -35,9 +35,13 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+import CategorySelect from '@/components/CategorySelect/index.vue' // 三级联动组件
+// 注册全局组件
+Vue.component('CategorySelect', CategorySelect)
+
 new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })
