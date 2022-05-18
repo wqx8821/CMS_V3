@@ -1,4 +1,4 @@
-import { trademark, attr } from "@/api/index";
+import { trademark, attr, spu, sku } from "@/api/index";
 
 export default {
   namespaced: true,
@@ -50,9 +50,33 @@ export default {
       const getAttrListResult = await attr.AttrList(...ids);
       return getAttrListResult;
     },
-    async addOrUpdateAttr({ commit }, id) {
-      const addOrUpdateAttrResult = await attr.reqAddOrUpdateAttr(id);
-      return addOrUpdateAttrResult;
+    async addOrUpdateAttr({ commit }, data) {
+      await attr.reqAddOrUpdateAttr(data);
+    },
+    // spu
+    async spuList({ commit }, data) {
+      let { page, limit, category3Id } = data;
+      return await spu.reqSpuList(page, limit, category3Id);
+    },
+    async reqSpu({ commit }, data) {
+      let spuResult = await spu.reqSpu(data);
+      return spuResult;
+    },
+    async reqTradeMarkList({ commit }) {
+      let tradeMarkListResult = await spu.reqTradeMarkList();
+      return tradeMarkListResult;
+    },
+    async reqSpuImageList({ commit }, data) {
+      return await spu.reqSpuImageList(data);
+    },
+    async reqBaseSaleAttrList({ commit }) {
+      return await spu.reqBaseSaleAttrList();
+    },
+    async reqAddOrUpdateSpu({ commit }, data) {
+      return await spu.reqAddOrUpdateSpu(data);
+    },
+    async reqDeleteSpu({ commit }, id) {
+      return await spu.reqDeleteSpu(id);
     },
   },
 };

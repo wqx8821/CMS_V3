@@ -168,7 +168,7 @@ export default {
       this.$store.dispatch("product/getAttrList", ids).then((result) => {
         if (result.code == 200) {
           this.attrList = result.data;
-          console.log(this.attrList);
+          // console.log(this.attrList);
         }
       });
     },
@@ -198,7 +198,7 @@ export default {
     // 编辑属性按钮
     updateAttr(row) {
       // 是否显示 table
-      isShowTable = false;
+      this.isShowTable = false;
       this.attrInfo = cloneDeep(row); // 深拷贝
       this.attrInfo.attrValueList.forEach((item) => {
         //第一个参数:对象  第二个参数:添加新的响应式属性  第三参数：新的属性的属性值
@@ -244,7 +244,7 @@ export default {
       // 整理参数
       const data = this.attrInfo.attrValueList.filter((res) => {
         if (res.valueName != "") {
-          delete item.flag;
+          delete res.flag;
           return true;
         }
       });
