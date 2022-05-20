@@ -34,6 +34,10 @@ Vue.use(ElementUI, { locale });
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false;
+//引入相关API请求接口
+import API from "@/api";
+//任意组件可以使用API相关的接口
+Vue.prototype.$API = API;
 
 import CategorySelect from "@/components/CategorySelect/index.vue"; // 三级联动组件
 import HintButton from "@/components/HintButton/index.vue"; // 按钮组件
